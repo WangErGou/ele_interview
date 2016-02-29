@@ -32,4 +32,20 @@
 * 除以150000，余数87882，87882＋1＝87883
 * 所以本次活动中奖号码为87883
 
-简单来说！获得抽奖码越多中奖概率越大哦，快去获取抽奖号吧！</span>
+简单来说！获得抽奖码越多中奖概率越大哦，快去获取抽奖号吧！
+
+数据库设计
+==========
+
+.. code-block:: sql
+
+    BEGIN;
+    CREATE TABLE `number_user` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `number` integer NOT NULL UNIQUE, `create_time` datetime NOT NULL);
+    CREATE TABLE `ele_user` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `name` varchar(64) NOT NULL);
+    CREATE TABLE `wining_record` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `sh_index` integer NOT NULL, `sz_index` integer NOT NULL, `wining_number` integer NOT NULL, `create_time` datetime NOT NULL);
+    ALTER TABLE `number_user` ADD COLUMN `user_id` integer NOT NULL;
+    ALTER TABLE `number_user` ALTER COLUMN `user_id` DROP DEFAULT;
+    CREATE INDEX `number_user_e8701ad4` ON `number_user` (`user_id`);
+    ALTER TABLE `number_user` ADD CONSTRAINT `number_user_user_id_53d4bb1edf121ccb_fk_ele_user_id` FOREIGN KEY (`user_id`) REFERENCES `ele_user` (`id`);
+
+    COMMIT;
