@@ -6,7 +6,6 @@ from lottery.models import NumberUser, WiningRecord
 # ----------------------------------------------------------------------------
 #       计算中奖号码
 # ----------------------------------------------------------------------------
-
 def calculate_wining_number(stop_datetime, lottery_date):
     '''
     计算指定发放截止日期和指定抽奖日期的中奖号码
@@ -87,7 +86,7 @@ def reverse_integer(a):
 # 既然是抽奖，那么抽奖号码最好不要采用一个一个增加的方法放出，给人的抽奖感觉会
 # 很假。
 # 可以采取这样一种策略：
-# 
+#
 #   1. 在开始之前估计一个保守数字，生成对应数量的抽奖号码
 #   2. 随后在消耗了 x% 的抽奖号码后，再生成 y% 的抽奖号码
 #   3. 为了避免最后未被抽中的抽奖号码尽可能的少，x 渐渐增大，y 渐渐减小
@@ -95,25 +94,50 @@ def reverse_integer(a):
 def get_random_number():
     '''
     获取一个随机的抽奖号码
-    
-    注意不要出现重复抽取，我仅仅依靠 MySQL 的事务机制来实现了
     '''
-    pass
+    return get_random_number_from_redis()
 
 
-def need_new_number():
+def get_random_number_from_redis():
     '''
-    是否需要新的抽奖号码
+    从 redis 的固定 set 中随机弹出一个抽奖号码，
+    如果 set 以空，出发 generate_new_number
     '''
+    # spop from redis set as number
+    # if number is None
+        # run generate_new_number
+        # spop from redis set as number
+    # return number
     pass
 
 
 def generate_new_number():
     '''
     生成一批抽奖号码
+
+    从 redis 中抽取当前的 x, y, max_number(已经存在的最大抽奖号码)，
+    生成新的抽奖号码 [max_number+1，max_number * (1+x)]
+    保存新的抽奖号码到数据库
+    从数据库中随机抽 (max_number*(1+x)) - max_number*y 个未被抽取的抽奖号码，
+    并保存的redis 的 set 中
+    更新 x, y, max_number
     '''
+    # get x, y, max_number from redis
+    # generate new number from max_number+1 to max_number * (1+x)
+    # save max_number to MySQL
+    # get random (max_number*(1+x) - max_number*y) number(not drawn) from MySQL
+    # and save to redis set
+    # ps: random --> order by ?
+    # update x, y, max_number
     pass
 
 
-def get_random_record():
+def generate_new_number_init():
+    '''
+    首次生成抽奖号码
+
+    根据某个常量生成固定数量的抽奖号码，
+    并将 y 的抽奖号码保存到 redis set
+    最后将 x, y, max_number 保存到 redis 中
+    '''
     pass
