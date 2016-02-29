@@ -16,14 +16,14 @@ class User(models.Model):
         return u'{id}-{name}'.format(id=self.id, name=self.name)
 
 
-class MarketIndex(models.Model):
+class WiningRecord(models.Model):
     '''
-    记录实际使用的上证 & 深证指数
+    记录实际使用的上证 & 深证指数 & 获奖号码，用于回溯
     '''
 
-    shanghai = models.IntegerField()
-    shenzheng = models.IntegerField()
-    win_number = models.IntegerField()
+    sh_index = models.IntegerField()
+    sz_index = models.IntegerField()
+    wining_number = models.IntegerField()
     create_time = models.DateTimeField(auto_now_add=True)
 
     def save(self):
@@ -33,7 +33,7 @@ class MarketIndex(models.Model):
         super(MarketIndex, self).save(force_insert=True)
 
     class Meta:
-        db_table = 'market_index'
+        db_table = 'wining_record'
 
     def __unicode__(self):
         return self.id
