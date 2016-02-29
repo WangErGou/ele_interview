@@ -46,6 +46,8 @@ class NumberUser(models.Model):
     number = models.IntegerField(unique=True, db_index=True)
     user = models.ForeignKey('User')
 
+    create_time = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         db_table = 'number_user'
 
